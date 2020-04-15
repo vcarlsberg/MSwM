@@ -24,4 +24,4 @@ hist(BMRI.JK.Close.Value)
 hist(BMRI.JK.Close.LaggedDifferences)
 
 #skewness and kurtosis measurement
-moments::skewness()
+moments::skewness(BMRI.JK.Close.Value)
