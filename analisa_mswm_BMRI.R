@@ -21,7 +21,10 @@ plot(BMRI.JK.Close.LaggedDifferences)
 
 #plot histogram of original value and the 1-lagged difference
 hist(BMRI.JK.Close.Value)
+plot(density(BMRI.JK.Close.Value))
+
 hist(BMRI.JK.Close.LaggedDifferences)
+plot(density(na.omit(BMRI.JK.Close.LaggedDifferences)))
 
 #skewness and kurtosis measurement
 moments::skewness(BMRI.JK.Close.Value)
