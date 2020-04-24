@@ -84,6 +84,9 @@ s.diff2<-s.diff[3:3290,1]
 s.diff1<-s.diff[2:3289,1]
 s.difft<-s.diff[1:3288,1]
 
+acf(s.diff,lag.max = 100)
+pacf(s.diff)
+
 mod<-lm(s.difft~s.diff1)
 summary(mod)
 
@@ -151,11 +154,76 @@ mod4.mswm.AR4.K2<-MSwM::msmFit(mod4, k=2, sw=c(T,T,T,T,T,T))
 summary(mod4.mswm.AR4.K2)
 AIC(mod4.mswm.AR4.K2)
 
-#      k=2	   k=3	   k=4	   k=5
+mod4.mswm.AR4.K3<-MSwM::msmFit(mod4, k=3, sw=c(T,T,T,T,T,T))
+summary(mod4.mswm.AR4.K3)
+AIC(mod4.mswm.AR4.K3)
+
+mod4.mswm.AR4.K4<-MSwM::msmFit(mod4, k=4, sw=c(T,T,T,T,T,T))
+summary(mod4.mswm.AR4.K4)
+AIC(mod4.mswm.AR4.K4)
+
+mod4.mswm.AR4.K5<-MSwM::msmFit(mod4, k=5, sw=c(T,T,T,T,T,T))
+summary(mod4.mswm.AR4.K5)
+AIC(mod4.mswm.AR4.K5)
+
+mod4.mswm.AR4.K6<-MSwM::msmFit(mod4, k=6, sw=c(T,T,T,T,T,T))
+summary(mod4.mswm.AR4.K6)
+AIC(mod4.mswm.AR4.K6)
+
+#      k=2	    k=3	      k=4	      k=5       k=6
 #AR1	38134.15	37960.76	37915.05	37959.03
 #AR2	38126.98	37956.64	37956.72	37906.32
 #AR3	38126.86	37954.67	37959.00	37912.02
-#AR4	38122.93			
+#AR4	38122.93	37951.92	37950.23	37871.45  37869.1
 
-label<-mod4.mswm.AR4.K2@Fit@filtProb
+label<-data.frame(mod4.mswm.AR4.K6@Fit@filtProb)
 
+#detecting regime per datapoint
+regime<-data.frame(regime=double())
+for (a in c(1:dim(label)[1]))
+{
+  subset.label<-label[a,]
+  regime.position<-which(subset.label==max(subset.label))
+  regime<-rbind(regime,data.frame(regime=regime.position))
+}
+
+
+list.arl <- vector(mode="list", length=max(regime))
+for (a in c(1:max(regime)))
+{
+  
+  names(list.arl)[a]<-(a)
+  
+}
+
+#list.arl[[1]]<-rep(3,5)
+#list.arl[[1]]<-c(list.arl[[1]],10)
+#list.arl[[4]]<-rep(2,10)
+
+
+#average run length
+counter<-0;regime.switch.count<-0
+for (a in c( 2:(dim(regime)[1]) ))
+{
+  x.curr<-regime[a,1]
+  x.prev<-regime[(a-1),1]
+  
+  if(x.curr==x.prev)
+  {
+    #print("sama")
+    counter<-counter+1
+  } else
+  {
+    #print("tidak sama")
+    counter<-counter+1
+    print(counter)
+    list.arl[[x.curr]]<-c(list.arl[[x.curr]],counter)
+    counter<-0
+    regime.switch.count<-regime.switch.count+1
+  }
+  
+}
+
+hist
+
+regime[2761,1]
